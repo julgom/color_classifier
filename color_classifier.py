@@ -7,9 +7,6 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-def color_distance(c1, c2):
-        return sqrt(sum((a - b) ** 2 for a, b in zip(c1, c2)))
-
 # Load environment variables from .env file
 load_dotenv()
 
@@ -27,9 +24,20 @@ def get_color_from_llm(hex_color):
     except Exception as e:
         return f"Error: {e}"
 
+'''    
+
+# Tried to do Euclidean distance by having a standard list of tuples for colors 
+# from this website: https://html-color.codes/<color>. However, it had some 
+# discrepancies (e.g., some greens were classified as grey and so on). So, we 
+# decided to go with the Gemini approach. If we had taken the time to classify 
+# the tuples more correctly, the Euclidean distance approach might have worked.
+
+def color_distance(c1, c2):
+        return sqrt(sum((a - b) ** 2 for a, b in zip(c1, c2)))
+
 # A function to classify RGB hex color into the given categories
 def classify_color(hex_color):
-    '''hex_color = hex_color.lstrip('#')  # Remove '#' if present
+    hex_color = hex_color.lstrip('#')  # Remove '#' if present
     if len(hex_color) != 6:
         return "invalid"  # Handle invalid input
     try:
@@ -68,11 +76,10 @@ def classify_color(hex_color):
         for color in color_list:
             if color_tuple in color_list:
                 return category
-    '''
-    return get_color_from_llm(hex_color)
+    
     
     # use Euclidean distance to find the closest match
-    '''closest_color = None
+    closest_color = None
     min_distance = float('inf')
     classified_color = "unknown"
     
@@ -84,11 +91,12 @@ def classify_color(hex_color):
                 closest_color = color
                 classified_color = category
     
-    return classified_color'''
+    return classified_color
+    '''
 
 @app.route('/<hex_color>')
 def classify(hex_color):
-    color_name = classify_color(hex_color)
+    color_name = get_color_from_llm(hex_color)
     
     # HTML and CSS template for the response
     return render_template_string("""

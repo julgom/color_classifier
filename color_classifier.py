@@ -29,7 +29,7 @@ def get_color_from_llm(hex_color):
 
 # A function to classify RGB hex color into the given categories
 def classify_color(hex_color):
-    hex_color = hex_color.lstrip('#')  # Remove '#' if present
+    '''hex_color = hex_color.lstrip('#')  # Remove '#' if present
     if len(hex_color) != 6:
         return "invalid"  # Handle invalid input
     try:
@@ -68,7 +68,7 @@ def classify_color(hex_color):
         for color in color_list:
             if color_tuple in color_list:
                 return category
-            
+    '''
     return get_color_from_llm(hex_color)
     
     # use Euclidean distance to find the closest match

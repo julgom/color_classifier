@@ -25,7 +25,7 @@ def get_color_from_llm(hex_color):
         response = model.generate_content(f"Given the hex color code {hex_color}, what is the closest color name or category from pink, red, orange, yellow, green, blue, violet, black, brown, grey, white? Please just provide the name.")
         return response.text
     except Exception as e:
-        print(f"Error: {e}")
+        return f"Error: {e}"
 
 # A function to classify RGB hex color into the given categories
 def classify_color(hex_color):

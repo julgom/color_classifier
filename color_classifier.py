@@ -4,6 +4,7 @@ from math import sqrt
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+import re
 
 app = Flask(__name__)
 
@@ -93,9 +94,37 @@ def classify_color(hex_color):
     
     return classified_color
     '''
+# Validate hex color
+def is_valid_hex_color(hex_color):
+    return bool(re.match(r'^[0-9A-Fa-f]{6}$', hex_color))
 
+@app.route('/')
+def index():
+    return render_template_string("""
+            <!DOCTYPE html>
+            <html lang="en">
+            <body>
+                <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Times New Roman;">
+                    <h2>Please enter a valid hex color code in the URL, e.g., /ff5733</h2>
+                </div>
+            </body>
+            </html>
+        """)
+    
 @app.route('/<hex_color>')
 def classify(hex_color):
+    if not is_valid_hex_color(hex_color):
+        return render_template_string("""
+            <!DOCTYPE html>
+            <html lang="en">
+            <body>
+                <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Times New Roman;">
+                    <h2>Please enter a valid hex color code in the URL, e.g., /ff5733</h2>
+                </div>
+            </body>
+            </html>
+        """)
+     
     color_name = get_color_from_llm(hex_color)
     
     # HTML and CSS template for the response
@@ -131,6 +160,7 @@ def classify(hex_color):
                 .container {
                     text-align: center;
                 }
+                
             </style>
         </head>
         <body>
@@ -140,8 +170,8 @@ def classify(hex_color):
                 </div>
             </div>
         </body>
-        </html>
-    """, hex_color=hex_color, color_name=color_name)
+        </html>""", hex_color=hex_color, color_name=color_name)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
